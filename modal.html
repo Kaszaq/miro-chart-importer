@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="https://miro.com/app/static/miro.uikit.css">
     <script src="https://miro.com/app/static/sdk.1.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js"
+            integrity="sha256-AdQN98MVZs44Eq2yTwtoKufhnU+uZ7v2kXnD5vqzZVo=" crossorigin="anonymous"></script>
 
     <style>
         .rtb-sidebar-caption {
@@ -37,19 +38,25 @@
             margin: 0 -10px;
             resize: none;
         }
-		.target {
-			cursor: default;
-			width: 100%;
-			height: 100%;
-			color: transparent;
-			outline: none;
-		}
-		html, body { height: 100%; }
+
+        .target {
+            cursor: default;
+            width: 100%;
+            height: 100%;
+            color: transparent;
+            outline: none;
+        }
+
+        html, body {
+            height: 100%;
+        }
     </style>
 </head>
 <body>
 <div class="target" contenteditable="true"></div>
-    <script type="text/javascript" src="modal.js"></script>
+<script type="text/javascript" src="commons.js"></script>
+<script type="text/javascript" src="modal.js"></script>
+<script type="text/javascript" src="dropHandler.js"></script>
 
 </body>
 </html>

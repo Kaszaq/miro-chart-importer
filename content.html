@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <script type="text/javascript" src="https://miro.com/app/static/sdk.1.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    #container {
+        /*height: 100%;*/
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-items: center;
+        padding-top: 32px;
+        box-sizing: border-box;
+    }
+
+
+    .image-box {
+        margin-left: 32px;
+        margin-bottom: 32px;
+        width: 112px;
+        height: 112px;
+        display: block;
+        justify-content: center;
+        align-items: center;
+        color: #050038;
+        text-align: center;
+        font:14px OpenSans, Arial, Helvetica, sans-serif;
+    }
+
+    .image-box img {
+        max-width: 112px;
+        max-height: 112px;
+        cursor: pointer;
+    }
+    .image-box div {
+        font-size: 12px;
+        color: #050038;
+        padding: 0 6px;
+    }
+
+
+</style>
+<body>
+<div id="container">
+</div>
+<script>
+
+    const images = [
+        {src: 'img/gantt.png', name: "gantt", title: "Gantt chart"},
+        {src: 'img/orgChart.png', name: "orgChart", title: "Organization chart"},
+    ]
+
+    function getImage(img) {
+        return `<div class="image-box">
+		        <img src="${img.src}"  id="${img.name}"><div class="image-box_caption">${img.title}</div>
+		        </div>`
+    }
+
+    function addImages(container) {
+        container.innerHTML += images.map(i => getImage(i)).join('')
+    }
+
+    function bootstrap() {
+        const container = document.getElementById('container')
+        addImages(container)
+        $("img").click(function () {
+            let id = $(this).attr('id');
+            miro.board.ui.openModal('modal.html#' + id);
+        });
+    }
+
+    miro.onReady(bootstrap)
+</script>
+</body>
+</html>

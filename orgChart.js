@@ -1,28 +1,3 @@
-let testData = `A		George Orwell	Head of heads		A	
-B	A
-C	B					
-D	B	Luca Film	El Ziomero			
-E	A					
-F	C					
-G	C					
-H	D					
-I	D					
-J	C					
-K	D					
-L	C					
-M	D					
-N	D					
-O	A					
-P	B					
-R	N					
-S	N					
-T	R					
-U	R					
-						
-						
-						
-						`;
-
 const MINIMAL_BOX_WIDTH = 250;
 const COLUMN_DIRECT_REPORT_IDENT_WIDTH = 30;
 const SPACE_BETWEEN_COLUMNS = 20;//todo: for test different value
@@ -60,7 +35,7 @@ function getColorForLevel(levelNo) {
     return colors[levelNo % colors.length];
 }
 
-function parseData(data) {
+function parseUserData(data) {
     let nodesMap = new Map();
     let lines = data.split("\n");
     for (var i = 0; i < lines.length; i++) {
@@ -173,10 +148,10 @@ function getWidgetsToCreate(widgetsToCreate, initialPosX, initialPosY, node, col
 
 }
 
-async function createChart(data) {
+async function createOrgChart(data) {
 
     //parse data
-    nodesMap = parseData(data);
+    nodesMap = parseUserData(data);
 
     //find a root
     orgRoot = findRoot(nodesMap);
@@ -195,6 +170,32 @@ async function createChart(data) {
     let widgetsToCreate = [];
     getWidgetsToCreate(widgetsToCreate, x, y, orgRoot, 0, 0, maxIdents, maxColumnWidth, 0);
 
-    await miro.board.widgets.create(widgetsToCreate);
+    await createWidgets(widgetsToCreate);
 
 }
+
+
+// let testData = `A		George Orwell	Head of heads		A
+// B	A
+// C	B
+// D	B	Luca Film	El Ziomero
+// E	A
+// F	C
+// G	C
+// H	D
+// I	D
+// J	C
+// K	D
+// L	C
+// M	D
+// N	D
+// O	A
+// P	B
+// R	N
+// S	N
+// T	R
+// U	R
+//
+//
+//
+// 						`;

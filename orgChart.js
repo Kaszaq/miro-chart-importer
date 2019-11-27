@@ -148,18 +148,21 @@ function getWidgetsToCreate(widgetsToCreate, initialPosX, initialPosY, node, col
 
 }
 
-async function createOrgChart(data) {
+async function createOrgChart(data, statusUpdateListener) {
 
     //parse data
+    statusUpdateListener.update("Parsing data");
     nodesMap = parseUserData(data);
 
     //find a root
+    statusUpdateListener.update("Finding top level manager");
     orgRoot = findRoot(nodesMap);
 
     countPeopleonLevel(orgRoot, 0);
     let proposedNumberOfColumns = Math.floor(Math.sqrt(orgRoot.peopleBelowCount + 1));
 
     // count columns below each node
+    statusUpdateListener.update("Estimating number of columns");
     getNumberOfColumns(orgRoot, proposedNumberOfColumns);
 
     let maxIdents = findMaxIndents(orgRoot, 0);
@@ -168,9 +171,11 @@ async function createOrgChart(data) {
     let x = viewport.x + 0.3 * viewport.width;
     let y = viewport.y + 0.3 * viewport.height;
     let widgetsToCreate = [];
+    statusUpdateListener.update("Calculating widgets positions");
     getWidgetsToCreate(widgetsToCreate, x, y, orgRoot, 0, 0, maxIdents, maxColumnWidth, 0);
 
-    await createWidgets(widgetsToCreate);
+    let widgetsCreator = new WidgetsCreator(widgetsToCreate.length);
+    await widgetsCreator.createWidgets(widgetsToCreate, "Creating widgets");
 
 }
 

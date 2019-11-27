@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://miro.com/app/static/sdk.1.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://miro.com/app/static/styles.1.0.css"/>
+
+    <style>
+
+        html, body {
+            height: 100%;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            height: 100%;
+            margin: 0;
+            background-color: transparent;
+        }
+
+        * {
+            user-select: none;
+        }
+
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            color: red;
+        }
+
+        .container {
+            position: relative;
+        }
+
+        .contained {
+            position: absolute;
+        }
+
+        .widediv {
+            height: 100%;
+
+        }
+
+        .text-container {
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+        }
+        .text-block{
+            width:280px;
+            display: flex;
+        }
+
+        .text {
+            width:85%;
+            /* display: flex; */
+        }
+        .text p {
+            float: right;
+        }
+        .percentage p {
+            float: right;
+        }
+        .percentage {
+              width:15%;
+              /* display: flex; */
+          }
+
+        .progress-bar-animated {
+            -webkit-animation: movingstripes 1s linear infinite;
+            animation: movingstripes 1s linear infinite;
+        }
+
+        .progress-bar-striped {
+            background-image: linear-gradient(45deg, #EBEBEF 25%, transparent 25%, transparent 50%, #EBEBEF 50%, #EBEBEF 75%, transparent 75%, transparent);
+            background-size: 1rem 1rem;
+            background-color: #CDCCD7;
+            width: 0%;
+        }
+
+        @keyframes movingstripes {
+            0% {
+                background-position: 1rem 0;
+            }
+
+            100% {
+                background-position: 0 0;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div class="widediv container">
+
+    <div id="progressBar" class="widediv contained progress-bar-striped progress-bar-animated">
+
+    </div>
+    <div class="contained text-container">
+        <div class="text-block">
+            <div class=" text">
+                <p id="statusText"></p>
+            </div>
+            <div class="percentage">
+                <p id="percentageText"></p>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script type="text/javascript" src="statusDisplayer.js"></script>
+
+</body>
+</html>

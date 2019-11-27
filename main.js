@@ -1,25 +1,33 @@
-
+let statusUpdateListener = new StatusListener();
 
 function handlePastedData(event) {
     let e = event.data; // unpack the event
-    miro.board.ui.closeModal();
     let func;
     if (e.type == 'pasted_gantt') {
+        miro.board.ui.closeModal();
         func = createGanttChart;
 
     } else if (e.type == 'pasted_orgChart') {
+        miro.board.ui.closeModal();
         func = createOrgChart;
     }
-    if (func != null) {
+    if (func) {
         //miro.board.ui.__hideButtonsPanels('all');
         //miro.board.__disableLeftClickOnCanvas() //buggy, doesnt work as expected:(
-        func.apply(null, [e.data]).then(() => {
+        miro.board.ui.openBottomPanel("statusDisplayer.html", {width: 280});
 
-        }).finally(() => {
+        setTimeout(function(){
+            func.apply(null, [e.data, statusUpdateListener])
+                .then(() => {
+                    statusUpdateListener.success();
+                    // todo: open modal or some other window with additional info of what failed
+                })
+                .catch(reason => {
+                    statusUpdateListener.fail();
+                })
+            ;
+        },50);
 
-            //miro.board.ui.__showButtonsPanels('all');
-        })
-        ; // todo: add error handling so it would be easy to put a message to end users if pasting failed for whatever reason
     }
 
     // todo: lock it from user interactions, show modal on bottom with progress bar

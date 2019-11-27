@@ -1,5 +1,3 @@
-
-
 const DAY_BOX_WIDTH = 25;
 const DAY_BOX_HEIGHT = 25;
 const MONTH_BOX_HEIGHT = 25;
@@ -61,7 +59,7 @@ function getMinMaxDates(projects) {
 }
 
 
-async function createTable(initialPosX, initialPosY, projects, minDate, maxDate, drawDays, drawBackground) {
+async function createTable(initialPosX, initialPosY, projects, minDate, maxDate, drawDays, drawBackground, widgetsCreator) {
 
     let widgetsToCreate = [];
     let tempMoment = minDate.clone();
@@ -165,10 +163,10 @@ async function createTable(initialPosX, initialPosY, projects, minDate, maxDate,
         daysShift++;
         tempMoment.add(1, 'days');
     }
-    createWidgets(widgetsToCreate)
+    widgetsCreator.createWidgets(widgetsToCreate, "Creating table");
 }
 
-async function createProjects(initialPosX, initialPosY, projects, minDate, maxDate, drawDays, drawLines) {
+async function createProjects(initialPosX, initialPosY, projects, minDate, maxDate, drawDays, drawLines, widgetsCreator) {
     let widgetsToCreate = [];
     let projectsNamesYShift = initialPosY + MONTH_BOX_HEIGHT + PROJECT_BOX_HEIGHT / 2 + PROJECT_BOX_SPACING + (drawDays ? DAY_BOX_HEIGHT : 0);
     let projectsNamesXShift = initialPosX + PROJECT_NAME_WIDTH / 2;
@@ -215,7 +213,7 @@ async function createProjects(initialPosX, initialPosY, projects, minDate, maxDa
 
     if (drawLines) {
 
-        let projectNamesWidgets = await createWidgets(widgetsToCreate);
+        let projectNamesWidgets = await widgetsCreator.createWidgets(widgetsToCreate, "Creating lines");
         // create lines
         widgetsToCreate = [];
         for (let i = 0; i < projects.length; i++) {
@@ -278,12 +276,12 @@ async function createProjects(initialPosX, initialPosY, projects, minDate, maxDa
             });
         }
     }
-    createWidgets(widgetsToCreate);
+    widgetsCreator.createWidgets(widgetsToCreate, "Creating projects");
 }
 
 
-async function createGanttChart(data) {
-
+async function createGanttChart(data, statusUpdateListener) {
+    statusUpdateListener.update("Parsing data");
     let projects = parseProjectData(data);
     let minMaxDates = getMinMaxDates(projects);
     let minDate = minMaxDates.minDate;
@@ -293,11 +291,24 @@ async function createGanttChart(data) {
     let y = viewport.y + 0.3 * viewport.height;
     //todo: creation of widgets should be replaced with some kind of throttling
 
-    let drawDays = true;
-    let drawLines = true;
-    let drawBackground = false;
-    await createTable(x, y, projects, minDate, maxDate, drawDays, drawBackground);
-    await createProjects(x, y, projects, minDate, maxDate, drawDays, drawLines);
+
+    statusUpdateListener.update("Drawing table");
+    let totalDays = maxDate.diff(minDate, 'days');
+    let totalMonths = Math.ceil(maxDate.diff(minDate, 'months', true));
+    let totalWeeks = Math.ceil(maxDate.diff(minDate, 'weeks', true));
+    let drawDays = totalMonths < 4; //todo: if dates longer than 3 months, false
+    let drawLines = projects.length < 20;
+    let drawBackground = totalWeeks < 20;
+    
+
+    let totalWidgetsToCreate = (drawDays ? totalDays : 0)
+        + totalMonths
+        + (drawBackground ? totalWeeks * 2 : 0)
+        + (drawLines ? 2 * projects.length : 0)
+        + 3 * projects.length;
+    let widgetsCreator = new WidgetsCreator(totalWidgetsToCreate);
+    createTable(x, y, projects, minDate, maxDate, drawDays, drawBackground, widgetsCreator);
+    await createProjects(x, y, projects, minDate, maxDate, drawDays, drawLines, widgetsCreator);
 }
 
 // let testData = `Project A1	2019-11-17	2019-12-01	36%

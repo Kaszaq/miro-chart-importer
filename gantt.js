@@ -296,7 +296,7 @@ async function createGanttChart(data, statusUpdateListener) {
     let totalDays = maxDate.diff(minDate, 'days');
     let totalMonths = Math.ceil(maxDate.diff(minDate, 'months', true));
     let totalWeeks = Math.ceil(maxDate.diff(minDate, 'weeks', true));
-    let drawDays = totalMonths < 4; //todo: if dates longer than 3 months, false
+    let drawDays = totalMonths < 4;
     let drawLines = projects.length < 20;
     let drawBackground = totalWeeks < 20;
 

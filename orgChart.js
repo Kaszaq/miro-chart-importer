@@ -25,7 +25,6 @@ class Person {
 
 // todo: parsing - check for uniquness of usernames, check for "multiple roots", check for missing parents or usernames
 // todo: add trimming of whitespaces to usernames
-// todo: handle throtlling on 200 widgets
 
 
 

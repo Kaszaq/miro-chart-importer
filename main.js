@@ -20,9 +20,9 @@ function handlePastedData(event) {
             func.apply(null, [e.data, statusUpdateListener])
                 .then(() => {
                     statusUpdateListener.success();
-                    // todo: open modal or some other window with additional info of what failed
                 })
                 .catch(reason => {
+                    // todo: open modal or some other window with additional info of what failed
                     statusUpdateListener.fail();
                 })
             ;

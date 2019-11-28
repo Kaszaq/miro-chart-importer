@@ -299,7 +299,7 @@ async function createGanttChart(data, statusUpdateListener) {
     let drawDays = totalMonths < 4; //todo: if dates longer than 3 months, false
     let drawLines = projects.length < 20;
     let drawBackground = totalWeeks < 20;
-    
+
 
     let totalWidgetsToCreate = (drawDays ? totalDays : 0)
         + totalMonths

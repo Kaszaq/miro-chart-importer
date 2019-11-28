@@ -127,7 +127,7 @@ async function createTable(initialPosX, initialPosY, projects, minDate, maxDate,
                     type: 'shape',
                     text: "",
                     x: initialPosX + PROJECT_NAME_WIDTH + daysShift * DAY_BOX_WIDTH + table5XShift,
-                    y: initialPosY + 2 * DAY_BOX_HEIGHT + tableYShift,
+                    y: initialPosY + (drawDays?2:1) * DAY_BOX_HEIGHT + tableYShift,
                     width: table5Width,
                     height: tableHeight,
                     style: {

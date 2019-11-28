@@ -10,8 +10,14 @@ This plugin allows to easily import charts from spreadsheets/tables into Miro.
 Gantt chart
 
 ![Gantt chart](docs/gantt.gif)
+
+
 ## Installation
 [CLICK HERE](https://miro.com/oauth/authorize/?response_type=token&client_id=3074457347050462782&redirect_uri=https://kaszaq.github.io/miro-chart-importer/installComplete.html) to install plugin in Miro.
+
+## Sample data
+
+Sample data to play around with this plugin is available [here](https://docs.google.com/spreadsheets/d/1Sw2g8WMVEoN1WZcd3oco1MXBeZVRDkFr__USVw8HF4Y/edit?usp=sharing)
 
 ## Why
 

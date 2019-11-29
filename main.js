@@ -1,5 +1,7 @@
 let statusUpdateListener = new StatusListener();
-
+function ParsingDataError(message) {
+    this.message = message;
+}
 function handlePastedData(event) {
     let e = event.data; // unpack the event
     let func;
@@ -21,7 +23,10 @@ function handlePastedData(event) {
                 .then(() => {
                     statusUpdateListener.success();
                 })
-                .catch(reason => {
+                .catch(e => {
+                    if (e instanceof ParsingDataError) {
+                        miro.showErrorNotification(e.message);
+                    }
                     // todo: open modal or some other window with additional info of what failed
                     statusUpdateListener.fail();
                 })

@@ -51,12 +51,12 @@ function findRoot(nodesMap) {
             if (orgRoot == null) {
                 orgRoot = person;
             } else {
-                // todo: error, multiple roots
+                    throw new ParsingDataError("Multiple top level managers found - "+orgRoot.displayName+" and "+person.displayName+". Please fix your data. ")
             }
         } else {
             let parent = nodesMap.get(person.parentUsername);
             if (parent == null) {
-                //todo: error, missing username
+                throw new ParsingDataError("Manager username "+person.parentUsername+" of "+ person.displayName +" was not defined in provided data. Please fix your data.")
             }
             person.parent = parent;
             parent.addDirectReport(person);

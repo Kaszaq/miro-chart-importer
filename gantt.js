@@ -4,12 +4,19 @@ const MONTH_BOX_HEIGHT = 25;
 const PROJECT_BOX_HEIGHT = 25;
 const PROJECT_BOX_SPACING = 5;
 let PROJECT_NAME_WIDTH = 350;
-
+function parseDate(textDate) {
+    let d = new Date(textDate);
+    if(!isNaN(d)){
+        return moment(textDate); //todo: consider dropping moment.js
+    }
+    textDate = textDate || "empty date field";
+    throw new ParsingDataError("Provided date is invalid: " + textDate + ". Please fix your data.");
+}
 class Project {
     constructor(projectName, dateStart, dateEnd, percentageComplete) {
         this.projectName = projectName;
-        this.dateStart = moment(dateStart);
-        this.dateEnd = moment(dateEnd);
+        this.dateStart = dateStart;
+        this.dateEnd =dateEnd;
 
         let tempPercComplete = parseFloat(percentageComplete);
         if (!isNaN(tempPercComplete)) {
@@ -43,7 +50,9 @@ function parseProjectData(data) {
     let lines = data.split("\n");
     for (var i = 0; i < lines.length; i++) {
         let row = lines[i].split("\t");
-        if (row[0] != "") projects.push(new Project(row[0], row[1], row[2], row[3]));
+        let dateStart = parseDate(row[1]);
+        let dateEnd = parseDate(row[2]);
+        if (row[0] != "") projects.push(new Project(row[0], dateStart, dateEnd, row[3]));
     }
     return projects;
 }
@@ -303,7 +312,7 @@ async function createGanttChart(data, statusUpdateListener) {
     let totalWeeks = Math.ceil(maxDate.diff(minDate, 'weeks', true));
     let totalYears =  Math.ceil(maxDate.diff(minDate, 'years', true));
     if (totalYears >25){
-        throw "Data has duration longer than 25 years."
+        throw new ParsingDataError("Data has duration longer than 25 years. Use data with duration of all projects that is shorter than 25 years.");
     }
     let drawDays = totalMonths < 4;
     let drawBackground = totalWeeks < 20;

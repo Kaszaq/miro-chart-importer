@@ -47,7 +47,7 @@ function parseUserData(data) {
 function findRoot(nodesMap) {
     let orgRoot;
     for (var [username, person] of nodesMap) {
-        if (person.parentUsername == "") {
+        if (!person.parentUsername || person.parentUsername == "") {
             if (orgRoot == null) {
                 orgRoot = person;
             } else {

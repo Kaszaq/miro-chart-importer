@@ -52,6 +52,7 @@ There are some ideas for features, some known issues, some features actually req
 * mixed technologies, ie. sometimes pur js, sometimes jquery
 
 #### Issues/features that require Miro fixes / features implementation
+* authentication doesn't work as expected. Even when user is authenticated he is forced to reload the board. With multiple plugins that would require such action from the user it could be a bad UX.
 * the efficiency of widget creation is visibly different between creating them via SDK and comparing to how fast they are created when done by Miro itself [for instance templates drop or copy pasting hundreds of objects]. Via SDK, as visible on pictures on top, creation of those widgets is really slow and impacts UX of this plugin
 * starting and endpoint points of lines cannot be set via SDK. 
   * Because of that it is impossible to draw nice org chart with lines. Until this gets added to SDK, the org chart will remain not as pretty as initially planned.

@@ -39,9 +39,10 @@ function handlePastedData(event) {
     //todo: na koncu zoom'a: miro.board.viewport.zoomToObject(widget)
 
 }
-
+let authorizer = new Authorizer(["boards:write", "boards:read"]);
+let l;
 miro.onReady(() => {
-    miro.addListener('DATA_BROADCASTED', handlePastedData);
+
     miro.initialize({
         extensionPoints: {
             toolbar: {
@@ -58,8 +59,11 @@ miro.onReady(() => {
                     '<path d="M38 25C38 25.5523 37.5523 26 37 26H27C26.4477 26 26 25.5523 26 25V23C26 22.4477 26.4477 22 27 22H37C37.5523 22 38 22.4477 38 23V25Z" fill="#F2C94C"/>' +
                     '<path d="M30 19C30 19.5523 29.5523 20 29 20H17C16.4477 20 16 19.5523 16 19V17C16 16.4477 16.4477 16 17 16H29C29.5523 16 30 16.4477 30 17V19Z" fill="#EB5757"/>',
 
-                onClick: function () {
-                    miro.board.ui.openLibrary('content.html#', {title: 'Charts importer'})
+                onClick: async function () {
+                    if (await authorizer.authorized()) {
+                        if(!l) l= miro.addListener('DATA_BROADCASTED', handlePastedData);
+                        return miro.board.ui.openLibrary('content.html#', {title: 'Charts importer'});
+                    }
                 }
             }
 

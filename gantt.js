@@ -1,10 +1,9 @@
-const DAY_BOX_WIDTH = 25;
+const MAX_TOP_BAR_ELEMENTS = 20;
 const DAY_BOX_HEIGHT = 25;
 const MONTH_BOX_HEIGHT = 25;
 const PROJECT_BOX_HEIGHT = 25;
 const PROJECT_BOX_SPACING = 5;
 let PROJECT_NAME_WIDTH = 350;
-
 
 class Project {
     constructor(projectName, dateStart, dateEnd, percentageComplete) {
@@ -24,6 +23,7 @@ class Project {
 
 const DAYS_COLORS = ["#fac710", "#fef445", "#8fd14f", "#cee741"];
 const MONTH_COLORS = ["#f27726", "#4eaa40"];
+const SINGLE_BAR_COLORS = ["#8fd14f", "#4eaa40"];
 
 function getDayColor(moment) {
     return DAYS_COLORS[moment.isoWeek() % 2 + 2 * (moment.month() % 2)];
@@ -33,6 +33,9 @@ function getMonthColor(moment) {
     return MONTH_COLORS[moment.month() % 2];
 }
 
+function getSingleTopBarColor(number) {
+    return SINGLE_BAR_COLORS[number % 2];
+}
 
 function parseProjectData(data) {
     let projects = [];
@@ -59,7 +62,7 @@ function getMinMaxDates(projects) {
 }
 
 
-async function createTable(initialPosX, initialPosY, projects, minDate, maxDate, drawDays, drawBackground, widgetsCreator) {
+async function createTable(initialPosX, initialPosY, projects, minDate, maxDate, dayWidth, drawDays, drawBackground, widgetsCreator) {
 
     let widgetsToCreate = [];
     let tempMoment = minDate.clone();
@@ -67,31 +70,43 @@ async function createTable(initialPosX, initialPosY, projects, minDate, maxDate,
 
     let tableHeight = projects.length * (PROJECT_BOX_HEIGHT + PROJECT_BOX_SPACING * 2);
     let tableYShift = tableHeight / 2;
-    let table5Width = (DAY_BOX_WIDTH * 5);
-    let table2Width = (DAY_BOX_WIDTH * 2);
+    let table5Width = (dayWidth * 5);
+    let table2Width = (dayWidth * 2);
     let table5XShift = table5Width / 2;
     let table2XShift = table2Width / 2;
 
     let daysShift = 0;
+    let topBarType;
+    let topBarFormat;
+    if (Math.ceil(maxDate.diff(minDate, 'months', true)) <= MAX_TOP_BAR_ELEMENTS) {
+        topBarType = 'month';
+        topBarFormat = 'MMMM YYYY';
+    } else {
+        topBarType = 'year';
+        topBarFormat = 'YYYY';
+    }
+
+
+    let lastDay = tempMoment;
     while (tempMoment.isSameOrBefore(maxDate)) {
         // draw months
-        if (!firstMonthDrawn || tempMoment.date() == 1) {
+        if (!firstMonthDrawn || tempMoment.isAfter(lastDay)) {
             firstMonthDrawn = true;
-            let lastDay = tempMoment.clone().endOf('month');
+            lastDay = tempMoment.clone().endOf(topBarType);
 
             let days = moment.min(maxDate, lastDay).diff(tempMoment, 'days') + 1;
-            let width = days * DAY_BOX_WIDTH;
+            let width = days * dayWidth;
             let height = MONTH_BOX_HEIGHT;
             widgetsToCreate.push({
                 type: 'shape',
-                text: "<p><strong>" + tempMoment.format("MMMM YYYY") + "</strong></p>",
-                x: initialPosX + PROJECT_NAME_WIDTH + daysShift * DAY_BOX_WIDTH + width / 2,
+                text: "<p><strong>" + tempMoment.format(topBarFormat) + "</strong></p>",
+                x: initialPosX + PROJECT_NAME_WIDTH + daysShift * dayWidth + width / 2,
                 y: initialPosY + height / 2,
                 width: width,
                 height: height,
                 style: {
                     textColor: '#000',
-                    backgroundColor: getMonthColor(tempMoment),
+                    backgroundColor: drawDays ? getMonthColor(tempMoment) : getSingleTopBarColor(tempMoment.get(topBarType)),
                     borderColor: 'transparent',
                     shapeType: 3,
                     fontSize: 12
@@ -105,9 +120,9 @@ async function createTable(initialPosX, initialPosY, projects, minDate, maxDate,
             widgetsToCreate.push({
                 type: 'shape',
                 text: tempMoment.date().toString(),
-                x: initialPosX + PROJECT_NAME_WIDTH + daysShift * DAY_BOX_WIDTH + DAY_BOX_WIDTH / 2,
+                x: initialPosX + PROJECT_NAME_WIDTH + daysShift * dayWidth + dayWidth / 2,
                 y: initialPosY + DAY_BOX_HEIGHT / 2 + DAY_BOX_HEIGHT,
-                width: DAY_BOX_WIDTH,
+                width: dayWidth,
                 height: DAY_BOX_HEIGHT,
                 style: {
                     textColor: '#000',
@@ -126,8 +141,8 @@ async function createTable(initialPosX, initialPosY, projects, minDate, maxDate,
                 widgetsToCreate.push({
                     type: 'shape',
                     text: "",
-                    x: initialPosX + PROJECT_NAME_WIDTH + daysShift * DAY_BOX_WIDTH + table5XShift,
-                    y: initialPosY + (drawDays?2:1) * DAY_BOX_HEIGHT + tableYShift,
+                    x: initialPosX + PROJECT_NAME_WIDTH + daysShift * dayWidth + table5XShift,
+                    y: initialPosY + (drawDays ? 2 : 1) * DAY_BOX_HEIGHT + tableYShift,
                     width: table5Width,
                     height: tableHeight,
                     style: {
@@ -144,7 +159,7 @@ async function createTable(initialPosX, initialPosY, projects, minDate, maxDate,
                 widgetsToCreate.push({
                     type: 'shape',
                     text: "",
-                    x: initialPosX + PROJECT_NAME_WIDTH + daysShift * DAY_BOX_WIDTH + table2XShift,
+                    x: initialPosX + PROJECT_NAME_WIDTH + daysShift * dayWidth + table2XShift,
                     y: initialPosY + 2 * DAY_BOX_HEIGHT + tableYShift,
                     width: table2Width,
                     height: tableHeight,
@@ -166,17 +181,17 @@ async function createTable(initialPosX, initialPosY, projects, minDate, maxDate,
     widgetsCreator.createWidgets(widgetsToCreate, "Creating table");
 }
 
-async function createProjects(initialPosX, initialPosY, projects, minDate, maxDate, drawDays, drawLines, widgetsCreator) {
+async function createProjects(initialPosX, initialPosY, projects, minDate, maxDate, dayWidth, drawDays, widgetsCreator) {
     let widgetsToCreate = [];
     let projectsNamesYShift = initialPosY + MONTH_BOX_HEIGHT + PROJECT_BOX_HEIGHT / 2 + PROJECT_BOX_SPACING + (drawDays ? DAY_BOX_HEIGHT : 0);
     let projectsNamesXShift = initialPosX + PROJECT_NAME_WIDTH / 2;
-    let rightProjectsNamesXShift = projectsNamesXShift + (maxDate.diff(minDate, 'days') + 1) * DAY_BOX_HEIGHT + PROJECT_NAME_WIDTH;
+    let boardWidth = (maxDate.diff(minDate, 'days') + 1) * dayWidth;
 
     for (let i = 0; i < projects.length; i++) {
         let project = projects[i];
         let leftProjectWidget = {
             type: 'shape',
-            x: projectsNamesXShift,
+            x: projectsNamesXShift - 3,
             y: projectsNamesYShift + i * (PROJECT_BOX_HEIGHT + PROJECT_BOX_SPACING * 2),
             width: PROJECT_NAME_WIDTH,
             height: PROJECT_BOX_HEIGHT + PROJECT_BOX_SPACING * 2,
@@ -190,63 +205,54 @@ async function createProjects(initialPosX, initialPosY, projects, minDate, maxDa
             }
         };
         widgetsToCreate.push(leftProjectWidget);
-        if (drawLines) {
-            let rightProjectWidget = {
-                type: 'shape',
-                x: rightProjectsNamesXShift,
-                y: projectsNamesYShift + i * (PROJECT_BOX_HEIGHT + PROJECT_BOX_SPACING * 2),
-                width: PROJECT_NAME_WIDTH,
-                height: PROJECT_BOX_HEIGHT + PROJECT_BOX_SPACING * 2,
-                text: project.projectName + "  ",
-                style: {
-                    textColor: '#000',
-                    backgroundColor: 'transparent',
-                    borderColor: 'transparent',
-                    fontSize: 14,
-                    textAlign: 'l'
-                }
-            };
-            widgetsToCreate.push(rightProjectWidget);
-        }
 
     }
 
-    if (drawLines) {
+    // create lines
 
-        let projectNamesWidgets = await widgetsCreator.createWidgets(widgetsToCreate, "Creating lines");
-        // create lines
-        widgetsToCreate = [];
-        for (let i = 0; i < projects.length; i++) {
-            widgetsToCreate.push({
-                type: 'line',
-                startWidgetId: projectNamesWidgets[i * 2].id,
-                endWidgetId: projectNamesWidgets[i * 2 + 1].id,
+    for (let i = 0; i < projects.length; i += 2) {
+        widgetsToCreate.push({
+            type: 'shape',
+            x: initialPosX + PROJECT_NAME_WIDTH + boardWidth / 2,
+            y: projectsNamesYShift + i * (PROJECT_BOX_HEIGHT + PROJECT_BOX_SPACING * 2),
+            width: boardWidth,
+            height: (PROJECT_BOX_HEIGHT + PROJECT_BOX_SPACING * 2),
+            style: {
+                backgroundColor: "transparent",
+                backgroundOpacity: 1,
+                bold: 0,
+                borderColor: "#808080",
+                borderOpacity: 1,
+                borderStyle: 1,
+                borderWidth: 1,
+                fontFamily: 0,
+                fontSize: 12,
+                highlighting: "",
+                italic: 0,
+                shapeType: 3,
+                strike: 0,
+                textAlign: "l",
+                textAlignVertical: "m",
+                textColor: "#000000",
+                underline: 0
+            }
+        });
 
-                style: {
-                    lineColor: "#808080",
-                    lineEndStyle: 0,
-                    lineStartStyle: 0,
-                    lineStyle: 1,
-                    lineThickness: 1,
-                    lineType: 0,
-                }
-            });
 
-        }
     }
 
     //create project bars
     for (let i = 0; i < projects.length; i++) {
         let project = projects[i];
-        let width = (project.dateEnd.diff(project.dateStart, 'days') + 1) * DAY_BOX_WIDTH;
+        let width = (project.dateEnd.diff(project.dateStart, 'days') + 1) * dayWidth;
         let daysSinceMinDate = project.dateStart.diff(minDate, 'days');
         widgetsToCreate.push({
             type: 'shape',
-            x: initialPosX + PROJECT_NAME_WIDTH + daysSinceMinDate * DAY_BOX_WIDTH + width / 2,
+            x: initialPosX + PROJECT_NAME_WIDTH + daysSinceMinDate * dayWidth + width / 2,
             y: projectsNamesYShift + i * (PROJECT_BOX_HEIGHT + PROJECT_BOX_SPACING * 2),
             width: width,
             height: PROJECT_BOX_HEIGHT,
-            text: "  " + project.projectName,
+            text: "",
             style: {
                 textColor: '#000',
                 borderColor: 'transparent',
@@ -260,11 +266,11 @@ async function createProjects(initialPosX, initialPosY, projects, minDate, maxDa
             let widthComplete = width * project.percentageComplete;
             widgetsToCreate.push({
                 type: 'shape',
-                x: initialPosX + PROJECT_NAME_WIDTH + daysSinceMinDate * DAY_BOX_WIDTH + widthComplete / 2,
+                x: initialPosX + PROJECT_NAME_WIDTH + daysSinceMinDate * dayWidth + widthComplete / 2,
                 y: projectsNamesYShift + i * (PROJECT_BOX_HEIGHT + PROJECT_BOX_SPACING * 2),
                 width: widthComplete,
                 height: PROJECT_BOX_HEIGHT,
-                text: "  " + project.projectName,
+                text: "",
                 style: {
                     textColor: '#000',
                     borderColor: 'transparent',
@@ -291,24 +297,28 @@ async function createGanttChart(data, statusUpdateListener) {
     let y = viewport.y + 0.3 * viewport.height;
     //todo: creation of widgets should be replaced with some kind of throttling
 
-
     statusUpdateListener.update("Drawing table");
     let totalDays = maxDate.diff(minDate, 'days');
     let totalMonths = Math.ceil(maxDate.diff(minDate, 'months', true));
     let totalWeeks = Math.ceil(maxDate.diff(minDate, 'weeks', true));
+    let totalYears =  Math.ceil(maxDate.diff(minDate, 'years', true));
+    if (totalYears >25){
+        throw "Data has duration longer than 25 years."
+    }
     let drawDays = totalMonths < 4;
-    let drawLines = projects.length < 20;
     let drawBackground = totalWeeks < 20;
 
+    let totalTopBarElements = totalMonths <= MAX_TOP_BAR_ELEMENTS ? totalMonths : totalYears;
 
     let totalWidgetsToCreate = (drawDays ? totalDays : 0)
-        + totalMonths
+        + totalTopBarElements
         + (drawBackground ? totalWeeks * 2 : 0)
-        + (drawLines ? 2 * projects.length : 0)
-        + 3 * projects.length;
+        + 4 * projects.length;
+
+    let dayWidth = 2000 / totalDays;
     let widgetsCreator = new WidgetsCreator(totalWidgetsToCreate);
-    createTable(x, y, projects, minDate, maxDate, drawDays, drawBackground, widgetsCreator);
-    await createProjects(x, y, projects, minDate, maxDate, drawDays, drawLines, widgetsCreator);
+    createTable(x, y, projects, minDate, maxDate, dayWidth, drawDays, drawBackground, widgetsCreator);
+    await createProjects(x, y, projects, minDate, maxDate, dayWidth, drawDays, widgetsCreator);
 }
 
 // let testData = `Project A1	2019-11-17	2019-12-01	36%

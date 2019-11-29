@@ -30,4 +30,6 @@ function handleStatusUpdate(event) {
 
 miro.onReady(() => {
     miro.addListener('DATA_BROADCASTED', handleStatusUpdate);
+    timeout=
+        setTimeout(miro.board.ui.closeBottomPanel, 15000);// todo: this is a workaround when for some reason the message with end doesnt get to the iframe so it would get closed at some point in time.
 })

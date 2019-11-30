@@ -39,8 +39,8 @@ There are some ideas for features, some known issues, some features actually req
 
 #### Features
 * zoom to graph once the graph is created
-* implement installation of this widget from within a Miro - for instance when one user install it for the team, others cannot use it even though they will see the buttons. Currently it is required for everyone to install it via link available above.
-* graphs of nodes chart with links between them. Good to draw dependencies between systems or any other linked graphs. This was actually the initial idea but is not yet added. 
+* graphs of nodes chart with links between them. Good to draw dependencies between systems or any other linked graphs. This was actually the initial idea but is not yet added.
+* export back into spreadsheets 
 * family tree
 * pie chart based on triangles. However the value of this might be low as user could as easily create such graph in Google spreadsheet and copy paste it into Miro.
 

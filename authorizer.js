@@ -23,7 +23,6 @@ class Authorizer {
     constructor(requiredScope) {
         this.requiredScope = requiredScope;
         this.authz = false;
-        this.promptForBoardReload = false;
     }
 
     async authorized() {
@@ -31,12 +30,10 @@ class Authorizer {
             this.authz = contains(await miro.currentUser.getScopes(), this.requiredScope);
             if (!this.authz) {
                 authorizer.authorize();
-                this.promptForBoardReload = true;
             }
         }
-        if (this.authz && this.promptForBoardReload) miro.showErrorNotification("To use this plugin you need to reload the board after plugin authorization.");
 
-        return this.promptForBoardReload ? false : this.authz;
+        return this.authz;
     }
 
     async authorize() {

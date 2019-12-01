@@ -4802,77 +4802,71 @@
         id="Issuesfeatures_that_require_Miro_fixes__features_implementation_53"></a>Issues/features that require Miro
     fixes / features implementation</h4>
 <ul>
-    <li class="has-line-data" data-line-start="54" data-line-end="56">
-        <p class="has-line-data" data-line-start="54" data-line-end="56">authentication doesn’t work as expected. Even
-            when user is authenticated he is forced to reload the board. With multiple plugins that would require such
-            action from the user it could be a bad UX.<br>
-            <img src="docs/authentication_issue.png" alt="Authentication problem"></p>
-    </li>
-    <li class="has-line-data" data-line-start="56" data-line-end="57">
-        <p class="has-line-data" data-line-start="56" data-line-end="57">the efficiency of widget creation is visibly
+    <li class="has-line-data" data-line-start="54" data-line-end="55">
+        <p class="has-line-data" data-line-start="54" data-line-end="55">the efficiency of widget creation is visibly
             different between creating them via SDK and comparing to how fast they are created when done by Miro itself
             [for instance templates drop or copy pasting hundreds of objects]. Via SDK, as visible on pictures on top,
             creation of those widgets is really slow and impacts UX of this plugin</p>
     </li>
-    <li class="has-line-data" data-line-start="57" data-line-end="64">
-        <p class="has-line-data" data-line-start="57" data-line-end="58">starting and endpoint points of lines cannot be
+    <li class="has-line-data" data-line-start="55" data-line-end="62">
+        <p class="has-line-data" data-line-start="55" data-line-end="56">starting and endpoint points of lines cannot be
             set via SDK.</p>
         <ul>
-            <li class="has-line-data" data-line-start="58" data-line-end="60">Because of that it is impossible to draw
+            <li class="has-line-data" data-line-start="56" data-line-end="58">Because of that it is impossible to draw
                 nice org chart with lines. Until this gets added to SDK, the org chart will remain not as pretty as
                 initially planned.<br>
                 <img src="docs/prettyOrgChart.jpg" alt="Organizational chart"></li>
-            <li class="has-line-data" data-line-start="60" data-line-end="62">Also impossible to draw dependencies in
+            <li class="has-line-data" data-line-start="58" data-line-end="60">Also impossible to draw dependencies in
                 Gantt<br>
                 <img src="docs/ganttDependencies.jpg" alt="Gantt - dependencies"></li>
-            <li class="has-line-data" data-line-start="62" data-line-end="64">family tree with siblings<br>
+            <li class="has-line-data" data-line-start="60" data-line-end="62">family tree with siblings<br>
                 <img src="docs/familyTree.jpg" alt="Family chart idea"></li>
         </ul>
     </li>
-    <li class="has-line-data" data-line-start="64" data-line-end="65">
-        <p class="has-line-data" data-line-start="64" data-line-end="65">drawing lines without prior objects creation.
+    <li class="has-line-data" data-line-start="62" data-line-end="63">
+        <p class="has-line-data" data-line-start="62" data-line-end="63">drawing lines without prior objects creation.
             Because of this requirement it currently takes a lot of time to draw a lines between objects as it is
             required to await for widgets which will get linked by that line to be created beforehand</p>
     </li>
-    <li class="has-line-data" data-line-start="65" data-line-end="67">
-        <p class="has-line-data" data-line-start="65" data-line-end="67">if it would be possible to draw lines without
+    <li class="has-line-data" data-line-start="63" data-line-end="65">
+        <p class="has-line-data" data-line-start="63" data-line-end="65">if it would be possible to draw lines without
             need of linking objects then it would be possible to draw line charts which is currently not possible.<br>
             <img src="docs/lineChart.jpg" alt="Line Chart"></p>
     </li>
-    <li class="has-line-data" data-line-start="67" data-line-end="68">
-        <p class="has-line-data" data-line-start="67" data-line-end="68">there seem to be some issues with data
+    <li class="has-line-data" data-line-start="65" data-line-end="66">
+        <p class="has-line-data" data-line-start="65" data-line-end="66">there seem to be some issues with data
             broadcast handling. This is to be expected as this is an experimental feature. Sometimes it seems as if some
             <strong>data broadcast</strong> events are not being received by the iframes. In logs there are visible
             errors due to channels lost, however it is quite hard to debug.</p>
     </li>
-    <li class="has-line-data" data-line-start="68" data-line-end="69">
-        <p class="has-line-data" data-line-start="68" data-line-end="69">iframes for some reason get ?disconnected? from
+    <li class="has-line-data" data-line-start="66" data-line-end="67">
+        <p class="has-line-data" data-line-start="66" data-line-end="67">iframes for some reason get ?disconnected? from
             each other, hence they stop working</p>
     </li>
-    <li class="has-line-data" data-line-start="69" data-line-end="70">
-        <p class="has-line-data" data-line-start="69" data-line-end="70">plugin implements its own “loading” bar. Would
+    <li class="has-line-data" data-line-start="67" data-line-end="68">
+        <p class="has-line-data" data-line-start="67" data-line-end="68">plugin implements its own “loading” bar. Would
             rather this be replaced with something out of the box, but I guess the value for this might be quite low</p>
     </li>
-    <li class="has-line-data" data-line-start="70" data-line-end="72">
-        <p class="has-line-data" data-line-start="70" data-line-end="72">right triangles would allow to draw more
+    <li class="has-line-data" data-line-start="68" data-line-end="70">
+        <p class="has-line-data" data-line-start="68" data-line-end="70">right triangles would allow to draw more
             sophisticated shapes. Apart from allowing to draw stacked/filled lines charts (which currently can be drawn
             using trapeze as can be seen on image below for a workaround), these would actually allow to fill shapes
             drawn by hand by users. The best would of course be triangles created from the code by providing 3 points ;)<br>
             <img src="docs/filledLineChart.jpg" alt="Filled Line Chart"></p>
     </li>
-    <li class="has-line-data" data-line-start="72" data-line-end="73">
-        <p class="has-line-data" data-line-start="72" data-line-end="73">throttling of widgets creation in this plugin
+    <li class="has-line-data" data-line-start="70" data-line-end="71">
+        <p class="has-line-data" data-line-start="70" data-line-end="71">throttling of widgets creation in this plugin
             should be updated once response from Miro dev team is given about actual limits of SDK calls</p>
     </li>
-    <li class="has-line-data" data-line-start="73" data-line-end="80">
-        <p class="has-line-data" data-line-start="73" data-line-end="74">it is very complicated to put a text aligned to
+    <li class="has-line-data" data-line-start="71" data-line-end="78">
+        <p class="has-line-data" data-line-start="71" data-line-end="72">it is very complicated to put a text aligned to
             an object as we do not know its width until it is created. The workaround is to either use big number for
             width you expect user wont go over, or create, check width and adjust in 2nd step. Would be easier if it was
             somehow possible via the api to put a text at x that starts from “that” point and from that point the text
             should appear either on left or right side of it.</p>
-        <p class="has-line-data" data-line-start="75" data-line-end="76">The workaround that will place the TEXT widget
+        <p class="has-line-data" data-line-start="73" data-line-end="74">The workaround that will place the TEXT widget
             at correct aligned to something looks as follows</p>
-        <pre><code class="has-line-data" data-line-start="77" data-line-end="80" class="language-javascript"><span
+        <pre><code class="has-line-data" data-line-start="75" data-line-end="78" class="language-javascript"><span
                 class="hljs-keyword">let</span> x=...;
 <span class="hljs-keyword">let</span> y=...;
 miro.board.widgets.update((<span class="hljs-keyword">await</span> miro.board.widgets.create({type:<span
@@ -4882,13 +4876,12 @@ miro.board.widgets.update((<span class="hljs-keyword">await</span> miro.board.wi
                     class="hljs-literal">true</span>}}));<span class="hljs-string">``</span><span class="hljs-string">`
 </span></code></pre>
     </li>
-    <li class="has-line-data" data-line-start="80" data-line-end="81">
-        <p class="has-line-data" data-line-start="80" data-line-end="81">text widget when created is for some reason
+    <li class="has-line-data" data-line-start="78" data-line-end="79">
+        <p class="has-line-data" data-line-start="78" data-line-end="79">text widget when created is for some reason
             moved on <strong>x axis</strong> 60.5 plus vs the requested <code>x</code> position during creation. This
             makes it a dangerous choice is it is unknown whether this is a bug and whether this can be compensated
             inside the code.</p>
     </li>
 </ul>
-
 </body>
 </html>
